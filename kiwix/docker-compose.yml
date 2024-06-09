@@ -1,0 +1,21 @@
+version: '3.3'
+services:
+  kiwix-serve:
+    container_name: kiwix
+    ports:
+      - 8000:8080
+    image: ghcr.io/kiwix/kiwix-serve:latest
+    volumes:
+      - /media/nvme0/app-data/kiwix/zim:/data
+    restart: unless-stopped 
+    command:
+      - '*.zim'
+    networks:
+      - homarr_net
+    # uncomment next 2 lines to use it with remote zim file
+    environment:
+      - 'DOWNLOAD=https://download.kiwix.org/zim/wikipedia_bm_all.zim'
+
+networks:
+  homarr_net:
+    external: true
