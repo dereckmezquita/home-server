@@ -1,0 +1,33 @@
+version: '3.3'
+services:
+  transmission-openvpn:
+    container_name: TransmissionVPN
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - '/media/nvme0/torrent/:/data'
+      - '/media/nvme0/app-data/transmission/:/config'
+      - '/home/dereck/docker/transmission/:/etc/openvpn/custom/'
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - OPENVPN_PROVIDER=CUSTOM
+      - OPENVPN_CONFIG=us.protonvpn.tcp
+      - OPENVPN_USERNAME=${OPENVPN_USERNAME}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+      - LOCAL_NETWORK=192.168.0.0/16
+      - TRANSMISSION_RPC_WHITELIST=192.168.*.*,127.0.0.1
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    ports:
+      - '9091:9091'
+    image: haugene/transmission-openvpn
+    networks:
+      - homarr_net
+
+networks:
+  homarr_net:
+    external: true
