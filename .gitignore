@@ -1,3 +1,9 @@
+# dev
+*.ignore
+
+# run time
+.env
+
 # proton vpn config
 *.ovpn
 db.sqlite

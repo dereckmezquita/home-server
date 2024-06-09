@@ -1,0 +1,27 @@
+version: '3'
+services:
+  openstreetmap:
+    container_name: openstreetmap
+    image: overv/openstreetmap-tile-server
+    ports:
+      - '8001:80'
+    volumes:
+      - osm-data:/data/database
+      - osm-tiles:/data/tiles
+      - /mnt/nvme1/app-data/open-street-map:/data
+    environment:
+      UPDATES: 'enabled'
+      THREADS: 4
+      ALLOW_CORS: 'enabled'
+      PGPASSWORD: 'your_password'  # Replace with your actual password
+    networks:
+      - homarr_net
+    command: run
+
+volumes:
+  osm-data:
+  osm-tiles:
+
+networks:
+  homarr_net:
+    external: true
