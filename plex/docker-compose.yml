@@ -1,0 +1,23 @@
+version: '3'
+services:
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - VERSION=docker
+      - PLEX_CLAIM=claim-Px_dpdxNssyt_i_JkYUZ
+    volumes:
+      - /media/nvme0/app-data/plex/config:/config
+      - /media/nvme0/media:/media
+    ports:
+      - "32400:32400"
+    restart: unless-stopped
+    networks:
+      - homarr_net
+
+networks:
+  homarr_net:
+    external: true
