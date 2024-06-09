@@ -1,0 +1,6 @@
+# proton vpn config
+*.ovpn
+db.sqlite
+
+# system files
+.DS_Store
