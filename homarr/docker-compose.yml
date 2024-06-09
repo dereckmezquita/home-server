@@ -1,0 +1,20 @@
+version: '3'
+services:
+  homarr:
+    container_name: homarr
+    image: ghcr.io/ajnart/homarr:latest
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/dereck/Projects/docker/homarr/content/configs:/app/data/configs
+      - /home/dereck/Projects/docker/homarr/content/icons:/app/public/icons
+      - /home/dereck/Projects/docker/homarr/content/data:/data
+    ports:
+      - '7575:7575'
+    networks:
+      - homarr_net
+
+networks:
+  homarr_net:
+    external: true
+
