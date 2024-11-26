@@ -1,0 +1,20 @@
+#!/bin/bash
+# sudo nano /etc/update-motd.d/99-disk-usage
+# sudo chmod +x /etc/update-motd.d/99-disk-usage
+
+# Define colors for pretty output
+YELLOW="\e[33m"
+RESET="\e[0m"
+
+# Get the disk usage information with header
+DISK_USAGE_HEADER=$(df -h --output=source,fstype,size,used,avail,pcent,target | head -n 1)
+DISK_USAGE=$(df -h --output=source,fstype,size,used,avail,pcent,target | grep -E '^/dev' | grep -E '/$|/mnt|/media|/data|/nvme0|/nvme1')
+
+# Create the MOTD content
+MOTD_CONTENT="${YELLOW}Disk Usage Information:${RESET}
+${DISK_USAGE_HEADER}
+${DISK_USAGE}
+${RESET}"
+
+# Print the MOTD content
+echo -e "$MOTD_CONTENT"
