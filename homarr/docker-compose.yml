@@ -5,9 +5,9 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /home/dereck/Projects/docker/homarr/content/configs:/app/data/configs
-      - /home/dereck/Projects/docker/homarr/content/icons:/app/public/icons
-      - /home/dereck/Projects/docker/homarr/content/data:/data
+      - /home/dereck/docker/home-server/homarr/content/configs:/app/data/configs
+      - /home/dereck/docker/home-server/homarr/content/icons:/app/public/icons
+      - /home/dereck/docker/home-server/homarr/content/data:/data
     ports:
       - '7575:7575'
     networks:
