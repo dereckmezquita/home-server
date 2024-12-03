@@ -1,14 +1,17 @@
 services:
   code-server:
     container_name: code-server
-    image: lscr.io/linuxserver/code-server:latest
+    build:
+      context: .
+      args:
+        - USERNAME=${USERNAME:-dereck}
+        - USER_UID=${USER_UID:-1000}
+        - USER_GID=${USER_GID:-1000}
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-      - PASSWORD=${CODE_SERVER_PASSWORD}  # Secure access password
+      - PASSWORD=${CODE_SERVER_PASSWORD}
     volumes:
-      - /media/nvme0/vscode-server:/home/dereck
+      - ${DATA_DIR:-/media/nvme0/vscode-server}:/home/${USERNAME:-dereck}
+      - ./config:/config
     ports:
       - '8443:8443'
     restart: unless-stopped
