@@ -1,0 +1,20 @@
+services:
+  code-server:
+    container_name: code-server
+    image: lscr.io/linuxserver/code-server:latest
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - PASSWORD=${CODE_SERVER_PASSWORD}
+    volumes:
+      - /home/dereck/Projects/docker/code-server/config:/config
+    ports:
+      - '8443:8443'
+    restart: unless-stopped
+    networks:
+      - homarr_net
+
+networks:
+  homarr_net:
+    external: true
