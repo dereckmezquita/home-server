@@ -1,5 +1,11 @@
 # home-server
 
+To run the apps:
+
+```bash
+docker compose up -d
+```
+
 ## Install `yt-dlp`
 
 Install `pipx` to manage Python applications:

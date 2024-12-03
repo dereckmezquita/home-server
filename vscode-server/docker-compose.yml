@@ -6,10 +6,9 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
-      - PASSWORD=${CODE_SERVER_PASSWORD}
-      - DEFAULT_WORKSPACE=/media/nvme0/work
+      - PASSWORD=${CODE_SERVER_PASSWORD}  # Secure access password
     volumes:
-      - /home/dereck/docker/home-server/vscode-server/config:/config
+      - /media/nvme0/vscode-server:/config
     ports:
       - '8443:8443'
     restart: unless-stopped
