@@ -7,8 +7,9 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
       - PASSWORD=${CODE_SERVER_PASSWORD}
+      - DEFAULT_WORKSPACE=/media/nvme0/work
     volumes:
-      - /home/dereck/Projects/docker/code-server/config:/config
+      - /home/dereck/docker/home-server/code-server/config:/config
     ports:
       - '8443:8443'
     restart: unless-stopped
