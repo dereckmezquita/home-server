@@ -1,10 +1,16 @@
 services:
   vscode-server:
+    container_name: vscode-server
     build:
       context: .
       dockerfile: Dockerfile
       args:
         USERNAME: ${USERNAME}
+    environment:
+      PASSWORD: ${PASSWORD}
+      PORT: ${PORT}
+    ports:
+      - "${PORT}:${PORT}"
     volumes:
       - ${HOST_VOLUME}:/home/${USERNAME}
     tty: true

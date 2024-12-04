@@ -24,9 +24,18 @@ RUN if ! id -u ${USERNAME} >/dev/null 2>&1; then \
         echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME}; \
     fi
 
-# Switch to the user by default
+# Switch to the user
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 
-# Set the default command to run when the container starts
-CMD ["/bin/bash"]
+# Install code-server
+RUN curl -fsSL https://code-server.dev/install.sh | sh
+
+# Expose the specified port
+EXPOSE ${PORT}
+
+# Set the entrypoint to code-server
+ENTRYPOINT ["code-server"]
+
+# Default arguments for code-server
+CMD ["--bind-addr", "0.0.0.0:${PORT}", "--auth", "password"]
