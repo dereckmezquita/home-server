@@ -1,0 +1,10 @@
+services:
+  vscode-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        USERNAME: ${USERNAME}
+    volumes:
+      - ${HOST_VOLUME}:/home/${USERNAME}
+    tty: true
