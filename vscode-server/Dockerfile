@@ -25,10 +25,17 @@ RUN apt-get update && \
     openssl \
     && rm -rf /var/lib/apt/lists/*
 
+# Create user and setup directories for VS Code Server
 RUN if ! id -u ${USERNAME} >/dev/null 2>&1; then \
         useradd -m -s /bin/bash ${USERNAME} && \
         echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME}; \
     fi && \
+    mkdir -p /home/${USERNAME}/.local/share/code-server/extensions && \
+    mkdir -p /home/${USERNAME}/.local/share/code-server/User && \
+    mkdir -p /home/${USERNAME}/.local/share/code-server/Machine && \
+    mkdir -p /home/${USERNAME}/.local/share/code-server/logs && \
+    mkdir -p /home/${USERNAME}/.local/share/code-server/User/globalStorage && \
+    mkdir -p /home/${USERNAME}/.local/share/code-server/User/History && \
     chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}
 
 RUN mkdir -p /etc/code-server && \
@@ -49,6 +56,9 @@ RUN mkdir -p ~/.config/code-server && \
     echo "cert: /etc/code-server/self-signed.crt" >> ~/.config/code-server/config.yaml && \
     echo "cert-key: /etc/code-server/self-signed.key" >> ~/.config/code-server/config.yaml
 
-ENTRYPOINT code-server --bind-addr 0.0.0.0:${PORT} --user-data-dir /home/${USERNAME}/.local/share/code-server
+ENTRYPOINT code-server \
+    --bind-addr "0.0.0.0:${PORT}" \
+    --user-data-dir "/home/${USERNAME}/.local/share/code-server" \
+    --config "/home/${USERNAME}/.config/code-server/config.yaml"
 
 EXPOSE ${PORT}
