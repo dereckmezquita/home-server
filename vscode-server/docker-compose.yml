@@ -1,5 +1,6 @@
 services:
   vscode-server:
+    image: vscode-server
     container_name: vscode-server
     build:
       context: .
