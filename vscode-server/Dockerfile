@@ -4,6 +4,11 @@ ARG USERNAME
 ARG PORT
 ARG PASSWORD
 
+ENV USERNAME=${USERNAME}
+ENV PORT=${PORT}
+ENV PASSWORD=${PASSWORD}
+ENV HOME=/home/${USERNAME}
+
 WORKDIR /workspace
 
 RUN apt-get update && \
@@ -23,15 +28,14 @@ RUN apt-get update && \
 RUN if ! id -u ${USERNAME} >/dev/null 2>&1; then \
         useradd -m -s /bin/bash ${USERNAME} && \
         echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME}; \
-    fi
+    fi && \
+    chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}
 
-RUN mkdir -p /home/${USERNAME}/.local/share/code-server && \
-    mkdir -p /etc/code-server && \
+RUN mkdir -p /etc/code-server && \
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
     -keyout /etc/code-server/self-signed.key \
     -out /etc/code-server/self-signed.crt \
-    -subj "/CN=localhost" && \
-    chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}
+    -subj "/CN=localhost"
 
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
@@ -45,7 +49,6 @@ RUN mkdir -p ~/.config/code-server && \
     echo "cert: /etc/code-server/self-signed.crt" >> ~/.config/code-server/config.yaml && \
     echo "cert-key: /etc/code-server/self-signed.key" >> ~/.config/code-server/config.yaml
 
-ENTRYPOINT ["code-server", "--bind-addr", "0.0.0.0:8443"]
-CMD ["--user-data-dir", "/home/${USERNAME}/.local/share/code-server"]
+ENTRYPOINT code-server --bind-addr 0.0.0.0:${PORT} --user-data-dir /home/${USERNAME}/.local/share/code-server
 
 EXPOSE ${PORT}
