@@ -11,6 +11,7 @@ ENV HOME=/home/${USERNAME}
 
 WORKDIR /workspace
 
+# Install necessary packages
 RUN apt-get update && \
     apt-get install -y \
     build-essential \
@@ -38,17 +39,21 @@ RUN if ! id -u ${USERNAME} >/dev/null 2>&1; then \
     mkdir -p /home/${USERNAME}/.local/share/code-server/User/History && \
     chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}
 
+# Create SSL certificates
 RUN mkdir -p /etc/code-server && \
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
     -keyout /etc/code-server/self-signed.key \
     -out /etc/code-server/self-signed.crt \
     -subj "/CN=localhost"
 
+# Install code-server as root
+RUN curl -fsSL https://code-server.dev/install.sh | sh
+
+# Switch to unprivileged user
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 
-RUN curl -fsSL https://code-server.dev/install.sh | sh
-
+# Configure code-server
 RUN mkdir -p ~/.config/code-server && \
     echo "bind-addr: 0.0.0.0:${PORT}" > ~/.config/code-server/config.yaml && \
     echo "auth: password" >> ~/.config/code-server/config.yaml && \
