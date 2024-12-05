@@ -6,11 +6,15 @@ services:
       dockerfile: Dockerfile
       args:
         USERNAME: ${USERNAME}
+        PORT: ${PORT}
+        PASSWORD: ${PASSWORD}
     environment:
       PASSWORD: ${PASSWORD}
       PORT: ${PORT}
+      HOME: /home/${USERNAME}
     ports:
       - "${PORT}:${PORT}"
     volumes:
       - ${HOST_VOLUME}:/home/${USERNAME}
+    restart: unless-stopped
     tty: true

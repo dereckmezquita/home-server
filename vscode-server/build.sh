@@ -7,3 +7,6 @@ docker image prune -f
 
 # Build and run the updated vscode-server
 docker compose up --build -d
+
+# Confirm everything is running
+docker ps

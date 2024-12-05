@@ -1,13 +1,11 @@
-# Use the latest Ubuntu LTS as the base image
 FROM ubuntu:22.04
 
-# Argument for username (passed from docker-compose.yml)
 ARG USERNAME
+ARG PORT
+ARG PASSWORD
 
-# Set the working directory
 WORKDIR /workspace
 
-# Update package lists and install desired packages
 RUN apt-get update && \
     apt-get install -y \
     build-essential \
@@ -16,26 +14,38 @@ RUN apt-get update && \
     git \
     vim \
     sudo \
+    net-tools \
+    nano \
+    zsh \
+    openssl \
     && rm -rf /var/lib/apt/lists/*
 
-# Create a user with the provided username only if it does not already exist
 RUN if ! id -u ${USERNAME} >/dev/null 2>&1; then \
         useradd -m -s /bin/bash ${USERNAME} && \
         echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME}; \
     fi
 
-# Switch to the user
+RUN mkdir -p /home/${USERNAME}/.local/share/code-server && \
+    mkdir -p /etc/code-server && \
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout /etc/code-server/self-signed.key \
+    -out /etc/code-server/self-signed.crt \
+    -subj "/CN=localhost" && \
+    chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}
+
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 
-# Install code-server
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
-# Expose the specified port
+RUN mkdir -p ~/.config/code-server && \
+    echo "bind-addr: 0.0.0.0:${PORT}" > ~/.config/code-server/config.yaml && \
+    echo "auth: password" >> ~/.config/code-server/config.yaml && \
+    echo "password: ${PASSWORD}" >> ~/.config/code-server/config.yaml && \
+    echo "cert: /etc/code-server/self-signed.crt" >> ~/.config/code-server/config.yaml && \
+    echo "cert-key: /etc/code-server/self-signed.key" >> ~/.config/code-server/config.yaml
+
+ENTRYPOINT ["code-server", "--bind-addr", "0.0.0.0:8443"]
+CMD ["--user-data-dir", "/home/${USERNAME}/.local/share/code-server"]
+
 EXPOSE ${PORT}
-
-# Set the entrypoint to code-server
-ENTRYPOINT ["code-server"]
-
-# Default arguments for code-server
-CMD ["--bind-addr", "0.0.0.0:${PORT}", "--auth", "password"]
