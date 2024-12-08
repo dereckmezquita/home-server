@@ -10,3 +10,5 @@ docker compose up --build -d
 
 # Confirm everything is running
 docker ps
+
+docker logs vscode-r

@@ -1,9 +1,19 @@
 # home-server
 
-To run the apps:
+To reset/run the apps:
 
 ```bash
-docker compose up -d
+./run.sh
+```
+
+.env vars file:
+
+```bash
+DOMAIN_NAME=rpi.local
+TZ=Etc/UTC
+PLEX_CLAIM=claim-somecode
+OPENVPN_USERNAME=someusername
+OPENVPN_PASSWORD=somepass
 ```
 
 ## Install `yt-dlp`
