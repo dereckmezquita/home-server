@@ -1,0 +1,10 @@
+# on local mac /etc/hosts
+# allows mac to resolve subdomains
+
+192.168.8.69 homarr.rpi.local
+192.168.8.69 plex.rpi.local
+192.168.8.69 kiwix.rpi.local
+192.168.8.69 torrent.rpi.local
+
+# then restart on mac 
+sudo killall -HUP mDNSResponder
